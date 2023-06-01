@@ -11,24 +11,15 @@ module.exports = {
   devtool: 'source-map',
   plugins: [
     new CopyPlugin({
-      patterns: [{
-          from: '/public',
-          to: '/build'
-      }
-      ],
+      patterns: [{from: 'public'}],
     })
   ],
   module: {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
+        exclude: /(node_modules)/,
+        use: ['babel-loader']
       }
     ]
   }
