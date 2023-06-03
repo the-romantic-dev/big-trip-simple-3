@@ -1,3 +1,7 @@
-import { initView } from './presenter/presenter';
+import Presenter from './presenter/presenter';
 
-initView();
+const tripEventsElement = document.querySelector('.trip-events');
+const tripControlsFiltersElement = document.querySelector('.trip-controls__filters');
+
+const presenter = new Presenter();
+presenter.init(tripControlsFiltersElement, tripEventsElement);
