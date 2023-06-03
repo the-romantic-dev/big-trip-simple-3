@@ -16,19 +16,21 @@ const createTemplate = () => `
               </form>`;
 
 export default class FiltersView {
-  getTemplate() {
+  #element;
+
+  #getTemplate() {
     return createTemplate();
   }
 
   getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+    if (!this.#element) {
+      this.#element = createElement(this.#getTemplate());
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
