@@ -7,27 +7,28 @@ const createTemplate = () => `
 
 export default class ListView {
 
+  #element;
   constructor() {
-    this.element = createElement(this.getTemplate());
+    this.#element = createElement(this.#getTemplate());
   }
 
   addEvent(event) {
-    this.element.appendChild(event);
+    this.#element.appendChild(event);
   }
 
-  getTemplate() {
+  #getTemplate() {
     return createTemplate();
   }
 
   getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+    if (!this.#element) {
+      this.#element = createElement(this.#getTemplate());
     }
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
 
