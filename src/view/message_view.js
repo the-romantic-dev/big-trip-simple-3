@@ -5,14 +5,17 @@ const createTemplate = (message) => `<p class="trip-events__msg">${message}</p>`
 export default class MessageView {
 
   #element;
-
-  #getTemplate(message) {
-    return createTemplate(message);
+  constructor(message) {
+    this.message = message;
   }
 
-  getElement(message) {
+  #getTemplate() {
+    return createTemplate(this.message);
+  }
+
+  getElement() {
     if (!this.#element) {
-      this.#element = createElement(this.#getTemplate(message));
+      this.#element = createElement(this.#getTemplate());
     }
 
     return this.#element;
