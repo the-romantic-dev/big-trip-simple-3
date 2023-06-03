@@ -6,11 +6,10 @@ import SortingView from '../view/sorting_view.js';
 import EventView from '../view/event_view.js';
 import EditingEventView from '../view/editing_event_view.js';
 import Model from '../model/model.js';
-
+import MessageView from '../view/message_view.js';
 export default class Presenter {
 
   #model;
-
   constructor() {
     this.#model = new Model();
   }
@@ -21,6 +20,10 @@ export default class Presenter {
 
   #addSorting(eventsContainer){
     render(new SortingView(), eventsContainer);
+  }
+
+  #addEmptyListMessage(eventsContainer) {
+    render(new MessageView('Click New Event to create your first point'), eventsContainer);
   }
 
   #addListenerForListElement(editingEventViewElement, eventViewElement) {
@@ -39,8 +42,6 @@ export default class Presenter {
       eventViewElement.replaceWith(editingEventViewElement);
       document.addEventListener('keydown', escListener);
     };
-
-
 
     eventViewElement.querySelector('button')
       .addEventListener('click', eventViewListener);
@@ -68,7 +69,12 @@ export default class Presenter {
   init(filtersContainer, eventsContainer) {
     this.#addFilters(filtersContainer);
     this.#addSorting(eventsContainer);
-    this.#addList(eventsContainer);
+    if (this.#model.eventsMap.size === 0) {
+      this.#addEmptyListMessage(eventsContainer);
+    } else {
+      this.#addList(eventsContainer);
+    }
+
   }
 }
 
