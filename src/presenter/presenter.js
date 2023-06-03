@@ -6,31 +6,40 @@ import SortingView from '../view/sorting_view.js';
 import EventView from '../view/event_view.js';
 import AddingEventView from '../view/adding_event_view.js';
 import EditingEventView from '../view/editing_event_view.js';
+import Model from '../model/model.js';
+import { generateDestinastion, generateEvent, generateOffers } from '../model/fish.js';
 
-const contentAndSortingContainer = document.querySelector('.trip-events');
-const filtersContainerElement = document.querySelector('.trip-controls__filters');
+export default class Presenter {
 
-const addFilters = () => {
-  render(new FiltersView(), filtersContainerElement);
-};
-const addSorting = () => {
-  render(new SortingView(), contentAndSortingContainer);
-};
+  constructor() {
+    this.model = new Model();
+  }
 
-const addList = () => {
-  const listView = new ListView();
-  listView.addEvent(new AddingEventView().getElement());
-  listView.addEvent(new EditingEventView().getElement());
-  listView.addEvent(new EventView().getElement());
-  listView.addEvent(new EventView().getElement());
-  listView.addEvent(new EventView().getElement());
-  render(listView, contentAndSortingContainer);
-};
+  addFilters(filtersContainer) {
+    render(new FiltersView(), filtersContainer);
+  }
 
-export const initView = () => {
-  addFilters();
-  addSorting();
-  addList();
-};
+  addSorting(eventsContainer){
+    render(new SortingView(), eventsContainer);
+  }
+
+
+  addList(eventsContainer) {
+    const listView = new ListView();
+    // listView.addEvent(new AddingEventView().getElement());
+    listView.addEvent(new EditingEventView([generateEvent(), [generateDestinastion(), generateOffers()]]).getElement());
+    for (const event of this.model.eventsMap) {
+      listView.addEvent(new EventView(event).getElement());
+    }
+    render(listView, eventsContainer);
+  }
+
+
+  init(filtersContainer, eventsContainer) {
+    this.addFilters(filtersContainer);
+    this.addSorting(eventsContainer);
+    this.addList(eventsContainer);
+  }
+}
 
 
