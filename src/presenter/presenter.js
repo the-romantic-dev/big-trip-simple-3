@@ -26,9 +26,9 @@ export default class Presenter {
     render(new MessageView('Click New Event to create your first point'), eventsContainer);
   }
 
-  #addListenerForListElement(editingEventViewElement, eventViewElement) {
+  #addListenersForListElement(editingEventView, eventView) {
     const editingEventViewListener = () => {
-      editingEventViewElement.replaceWith(eventViewElement);
+      editingEventView.element.replaceWith(eventView.element);
       document.removeEventListener('keydown', escListener);
     };
 
@@ -38,29 +38,24 @@ export default class Presenter {
       }
     }
 
-    const eventViewListener = () => {
-      eventViewElement.replaceWith(editingEventViewElement);
+    eventView.addButtonClickListener(() => {
+      eventView.element.replaceWith(editingEventView.element);
       document.addEventListener('keydown', escListener);
-    };
+    });
 
-    eventViewElement.querySelector('button')
-      .addEventListener('click', eventViewListener);
-
-    editingEventViewElement.querySelector('form')
-      .addEventListener('submit', editingEventViewListener);
-
-    editingEventViewElement.querySelector('.event__rollup-btn')
-      .addEventListener('click', editingEventViewListener);
+    editingEventView.addButtonClickListener(editingEventViewListener);
+    editingEventView.addSubmitListener(editingEventViewListener);
   }
 
 
   #addList(eventsContainer) {
     const listView = new ListView();
     for (const event of this.#model.eventsMap) {
-      const editingEventViewElement = new EditingEventView(event).getElement();
-      const eventViewElement = new EventView(event).getElement();
-      this.#addListenerForListElement(editingEventViewElement, eventViewElement);
-      listView.addEvent(eventViewElement);
+
+      const editingEventView = new EditingEventView(event);
+      const eventView = new EventView(event);
+      this.#addListenersForListElement(editingEventView, eventView);
+      listView.addEvent(eventView.element);
     }
     render(listView, eventsContainer);
   }
@@ -74,7 +69,6 @@ export default class Presenter {
     } else {
       this.#addList(eventsContainer);
     }
-
   }
 }
 
