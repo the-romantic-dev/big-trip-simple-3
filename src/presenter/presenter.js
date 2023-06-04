@@ -3,72 +3,68 @@ import { render } from '../render.js';
 import FiltersView from '../view/filters_view.js';
 import ListView from '../view/list_view.js';
 import SortingView from '../view/sorting_view.js';
-import EventView from '../view/event_view.js';
-import EditingEventView from '../view/editing_event_view.js';
+
 import Model from '../model/model.js';
 import MessageView from '../view/message_view.js';
+import EventPresenter from './event_presenter.js';
 export default class Presenter {
 
   #model;
-  constructor() {
+  #eventPresenters = [];
+
+  get eventPresenters() {
+    return this.#eventPresenters;
+  }
+
+  constructor(filtersContainer, eventsContainer) {
+    this.filtersContainer = filtersContainer;
+    this.eventsContainer = eventsContainer;
     this.#model = new Model();
+
+    this.resetList = this.resetList.bind(this);
   }
 
-  #addFilters(filtersContainer) {
-    render(new FiltersView(), filtersContainer);
+  #addFilters() {
+    render(new FiltersView(), this.filtersContainer);
   }
 
-  #addSorting(eventsContainer){
-    render(new SortingView(), eventsContainer);
+  #addSorting(){
+    render(new SortingView(), this.eventsContainer);
   }
 
-  #addEmptyListMessage(eventsContainer) {
-    render(new MessageView('Click New Event to create your first point'), eventsContainer);
+  #addEmptyListMessage() {
+    render(new MessageView('Click New Event to create your first point'), this.eventsContainer);
   }
 
-  #addListenersForListElement(editingEventView, eventView) {
-    const editingEventViewListener = () => {
-      editingEventView.element.replaceWith(eventView.element);
-      document.removeEventListener('keydown', escListener);
-    };
-
-    function escListener (event) {
-      if (event.key === 'Escape') {
-        editingEventViewListener();
-      }
-    }
-
-    eventView.addButtonClickListener(() => {
-      eventView.element.replaceWith(editingEventView.element);
-      document.addEventListener('keydown', escListener);
-    });
-
-    editingEventView.addButtonClickListener(editingEventViewListener);
-    editingEventView.addSubmitListener(editingEventViewListener);
-  }
-
-
-  #addList(eventsContainer) {
+  #addList() {
     const listView = new ListView();
     for (const event of this.#model.eventsMap) {
-
-      const editingEventView = new EditingEventView(event);
-      const eventView = new EventView(event);
-      this.#addListenersForListElement(editingEventView, eventView);
-      listView.addEvent(eventView.element);
+      const eventPresenter = new EventPresenter(event, this.resetList);
+      this.#eventPresenters.push(eventPresenter);
+      const newEventElement = eventPresenter.createNewEventViewElement();
+      listView.addEvent(newEventElement);
     }
-    render(listView, eventsContainer);
+    render(listView, this.eventsContainer);
   }
 
 
-  init(filtersContainer, eventsContainer) {
-    this.#addFilters(filtersContainer);
-    this.#addSorting(eventsContainer);
+  init() {
+    this.#addFilters();
+    this.#addSorting();
     if (this.#model.eventsMap.size === 0) {
-      this.#addEmptyListMessage(eventsContainer);
+      this.#addEmptyListMessage();
     } else {
-      this.#addList(eventsContainer);
+      this.#addList();
     }
+  }
+
+  resetList() {
+    this.eventPresenters.forEach((value) => {
+      if (value.currentView === value.editingEventView) {
+        value.replaceEditingFormWithEvent();
+      }
+    });
+
   }
 }
 
