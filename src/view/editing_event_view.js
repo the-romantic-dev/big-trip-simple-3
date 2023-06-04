@@ -1,6 +1,7 @@
-import {createElement} from '../render.js';
 import { cities, eventTypes } from '../const.js';
 import { capitalize } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
+
 const createEventTypeItemListTemplate = () => {
   let result = '';
   for (const type in eventTypes) {
@@ -110,31 +111,32 @@ const createTemplate = (event, destination, offers) => {
   </li>`;
 };
 
-export default class EditingEventView {
+export default class EditingEventView extends AbstractView {
 
   #event;
   #destination;
   #offers;
-  #element;
+
   constructor(event) {
+    super();
     this.#event = event[0];
     this.#destination = event[1][0];
     this.#offers = event[1][1];
   }
 
-  getTemplate() {
+  get template() {
     return createTemplate(this.#event, this.#destination, this.#offers);
   }
 
-  getElement() {
-    if (!this.#element) {
-      this.#element = createElement(this.getTemplate());
-    }
-
-    return this.#element;
+  addSubmitListener(listener) {
+    this._callback.submit = listener;
+    const form = this.element.querySelector('form');
+    form.addEventListener('submit', listener);
   }
 
-  removeElement() {
-    this.#element = null;
+  addButtonClickListener(listener) {
+    this._callback.buttonClick = listener;
+    const button = this.element.querySelector('.event__rollup-btn');
+    button.addEventListener('click', listener);
   }
 }
