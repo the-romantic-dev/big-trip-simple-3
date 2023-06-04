@@ -1,5 +1,4 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {createElement} from '../render.js';
 
 const createTemplate = () => `
 <ul class="trip-events__list">
