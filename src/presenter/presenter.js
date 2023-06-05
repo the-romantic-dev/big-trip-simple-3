@@ -20,41 +20,46 @@ export default class Presenter {
     this.filtersContainer = filtersContainer;
     this.eventsContainer = eventsContainer;
     this.#model = new Model();
-
+    this.listView = new ListView();
     this.resetList = this.resetList.bind(this);
-  }
+    this.sortList = this.sortList.bind(this);
 
-  #addFilters() {
-    render(new FiltersView(), this.filtersContainer);
-  }
-
-  #addSorting(){
-    render(new SortingView(), this.eventsContainer);
-  }
-
-  #addEmptyListMessage() {
-    render(new MessageView('Click New Event to create your first point'), this.eventsContainer);
-  }
-
-  #addList() {
-    const listView = new ListView();
     for (const event of this.#model.eventsMap) {
       const eventPresenter = new EventPresenter(event, this.resetList);
       this.#eventPresenters.push(eventPresenter);
-      const newEventElement = eventPresenter.createNewEventViewElement();
-      listView.addEvent(newEventElement);
     }
-    render(listView, this.eventsContainer);
+  }
+
+  #renderFilters() {
+    render(new FiltersView(), this.filtersContainer);
+  }
+
+  #renderSorting(){
+    const sortingView = new SortingView();
+    sortingView.addClickListener(this.sortList);
+    render(sortingView, this.eventsContainer);
+
+  }
+
+  #renderEmptyListMessage() {
+    render(new MessageView('Click New Event to create your first point'), this.eventsContainer);
+  }
+
+  #renderList() {
+    const elementsList = this.#eventPresenters.map((value)=>value.createNewEventViewElement());
+    this.listView.addAllEvents(elementsList);
+    render(this.listView, this.eventsContainer);
   }
 
 
   init() {
-    this.#addFilters();
-    this.#addSorting();
+    this.#renderFilters();
+    this.#renderSorting();
     if (this.#model.eventsMap.size === 0) {
-      this.#addEmptyListMessage();
+      this.#renderEmptyListMessage();
     } else {
-      this.#addList();
+      this.sortEventsByDay();
+      this.#renderList();
     }
   }
 
@@ -65,6 +70,41 @@ export default class Presenter {
       }
     });
 
+  }
+
+  sortList(type) {
+    this.listView.clear();
+    if (type === 'day') {
+      this.sortEventsByDay();
+      this.#renderList();
+    } else if (type === 'price') {
+      this.sortEventsByPrice();
+      this.#renderList();
+    }
+  }
+
+  sortEventsByDay() {
+    const compareDates = (a, b) => {
+      a = a.event[0].begin;
+      b = b.event[0].begin;
+      const dateA = new Date(a.year, a.month - 1, a.day, a.hours, a.minutes);
+      const dateB = new Date(b.year, b.month - 1, b.day, b.hours, b.minutes);
+      return dateA.getTime() - dateB.getTime();
+    };
+
+    this.eventPresenters.sort(compareDates);
+  }
+
+  sortEventsByPrice() {
+
+    const comparePrices = (a, b) => {
+      a = a.event[0];
+      b = b.event[0];
+
+      return a.price - b.price;
+    };
+
+    this.eventPresenters.sort(comparePrices);
   }
 }
 

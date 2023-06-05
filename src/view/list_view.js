@@ -16,8 +16,18 @@ export default class ListView extends AbstractView{
     this.element.appendChild(event);
   }
 
+  addAllEvents(events) {
+    events.forEach((event) => {
+      this.addEvent(event);
+    });
+  }
+
   get template() {
     return createTemplate();
+  }
+
+  clear() {
+    this.element.innerHTML = '';
   }
 }
 
