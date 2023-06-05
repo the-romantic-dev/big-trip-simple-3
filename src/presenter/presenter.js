@@ -84,7 +84,6 @@ export default class Presenter {
   }
 
   sortEventsByDay() {
-    console.log(this.#eventPresenters.map((value)=>value.event[0].begin));
     const compareDates = (a, b) => {
       a = a.event[0].begin;
       b = b.event[0].begin;
@@ -94,7 +93,6 @@ export default class Presenter {
     };
 
     this.eventPresenters.sort(compareDates);
-    console.log(this.#eventPresenters.map((value)=>value.event[0].begin));
   }
 
   sortEventsByPrice() {
