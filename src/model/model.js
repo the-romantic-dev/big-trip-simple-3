@@ -15,5 +15,6 @@ export default class Model {
   get eventsMap() {
     return this.#eventsMap;
   }
+
 }
 
