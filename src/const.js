@@ -4,12 +4,6 @@ export const eventTypes = [
   'check-in', 'sightseeing','restaurant'
 ];
 
-export const monthNames = [
-  'JAN', 'FEB', 'MAR',
-  'APR', 'MAY', 'JUN',
-  'JUL', 'AUG', 'SEP',
-  'OCT', 'NOV', 'DEC'];
-
 export const cities = ['Chamonix', 'Geneva', 'Amsterdam'];
 export const cityToPhotos = new Map([
   [cities[0], ['http://picsum.photos/248/152?r=1', 'http://picsum.photos/248/152?r=2']],
@@ -38,3 +32,31 @@ export const eventTypeToOffers = new Map([
   [eventTypes[7], []],
   [eventTypes[8], []]
 ]);
+
+export const destinationTemple = {
+  id: 1,
+  description: '',
+  name: '',
+  pictures: [{}]
+};
+
+export const pictureTemple = {
+  src: '',
+  description: ''
+};
+
+export const offerTemple = {
+  id: 1,
+  title: '',
+  price: 0
+};
+
+export const pointTemple = {
+  basePrice: 0,
+  dateFrom: '',
+  dateTo: '',
+  destinationId: 0,
+  id: 0,
+  offersId: 0,
+  type: ''
+};

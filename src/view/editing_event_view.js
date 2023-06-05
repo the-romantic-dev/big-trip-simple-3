@@ -2,6 +2,10 @@ import { cities, cityToPhotos, eventTypes } from '../const.js';
 import { capitalize, getRandomInteger } from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { eventTypeToOffers } from '../const.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import dayjs from 'dayjs';
+
 const createEventTypeItemListTemplate = () => {
   let result = '';
   for (const type of eventTypes) {
@@ -47,10 +51,8 @@ const createIamgeListTemplate = (destination) => {
 };
 
 const createTemplate = (event, destination, offers) => {
-  const date = `${event.begin.year % 100}/${event.begin.month < 10 ? `0${event.begin.month}` : event.begin.month}/${event.begin.day < 10 ? `0${event.begin.day}` : event.begin.day}`;
-  const beginTime = `${event.begin.hours < 10 ? `0${event.begin.hours}` : event.begin.hours}:${event.begin.minutes < 10 ? `0${event.begin.minutes}` : event.begin.minutes}`;
-  const endTime = `${event.end.hours < 10 ? `0${event.end.hours}` : event.end.hours}:${event.end.minutes < 10 ? `0${event.end.minutes}` : event.end.minutes}`;
-
+  const dateFrom = dayjs(event.dateFrom);
+  const dateTo = dayjs(event.dateTo);
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
@@ -81,10 +83,10 @@ const createTemplate = (event, destination, offers) => {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${date} ${beginTime}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom.format('DD/MM/YYYY HH:mm')}">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${date} ${endTime}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo.format('DD/MM/YYYY HH:mm')}">
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -130,6 +132,7 @@ export default class EditingEventView extends AbstractStatefulView {
   #event;
   #destination;
   #offers;
+  #datepicker;
 
   constructor(event) {
     super();
@@ -138,6 +141,8 @@ export default class EditingEventView extends AbstractStatefulView {
     this.#offers = event[1][1];
     this.#addTypeChangeListener();
     this.#addDestinationChangeListener();
+    this.updateElement({});
+
   }
 
   get template() {
@@ -176,7 +181,6 @@ export default class EditingEventView extends AbstractStatefulView {
   #addDestinationChangeListener() {
     const destinationSelector = this.element.querySelector('.event__input--destination');
     destinationSelector.addEventListener('change', (evt) => {
-      console.log(cities.includes(evt.target.value));
       if (cities.includes(evt.target.value)) {
         this.#destination.city = evt.target.value;
         this.#destination.photos = cityToPhotos.get(evt.target.value);
@@ -195,5 +199,27 @@ export default class EditingEventView extends AbstractStatefulView {
     this.addButtonClickListener(this._callback.buttonClick);
     this.addSubmitListener(this._callback.submit);
     this.#addDestinationChangeListener();
+    this.#setDatepicker();
+  }
+
+  #setDatepicker() {
+    const dateSelectors = this.element.querySelectorAll('.event__input--time');
+    dateSelectors.forEach((value)=> {
+      this.#datepicker = flatpickr(
+        value, {
+          enableTime: true,
+          dateFormat: 'd/m/y H:i',
+          minDate: 'today',
+
+        });
+    });
+  }
+
+  removeElement() {
+    super.removeElement();
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
   }
 }

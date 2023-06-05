@@ -6,19 +6,28 @@ const randomType = () => {
   return eventTypes[randomIndex];
 };
 
-const randomDate = () => ({
-  day: getRandomInteger(1, 31),
-  month: getRandomInteger(1, 12),
-  year: getRandomInteger(2023, 2030),
-  hours: getRandomInteger(0, 23),
-  minutes: getRandomInteger(0, 59)
-});
+// const randomDate = () => ({
+//   day: getRandomInteger(1, 31),
+//   month: getRandomInteger(1, 12),
+//   year: getRandomInteger(2023, 2030),
+//   hours: getRandomInteger(0, 23),
+//   minutes: getRandomInteger(0, 59)
+// });
 
+const randomDate = () => {
+  const year = getRandomInteger(2023, 2030);
+  const month = getRandomInteger(1, 12);
+  const day = getRandomInteger(1, 31);
+  const hours = getRandomInteger(0, 23);
+  const minutes = getRandomInteger(0, 59);
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
 
 export const generateEvent = () => ({
   type: randomType(),
-  begin: randomDate(),
-  end: randomDate(),
+  dateFrom: randomDate(),
+  dateTo: randomDate(),
   price: getRandomInteger(10, 100),
 });
 

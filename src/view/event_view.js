@@ -1,6 +1,6 @@
-import { monthNames } from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { capitalize } from '../utils.js';
+import dayjs from 'dayjs';
 
 const offersListTemplate = (offers) => {
   let result = '';
@@ -16,25 +16,22 @@ const offersListTemplate = (offers) => {
 };
 
 const createTemplate = (event, destination, offers) => {
-
-  const date = `${event.begin.year}-${event.begin.month < 10 ? `0${event.begin.month}` : event.begin.month}-${event.begin.day < 10 ? `0${event.begin.day}` : event.begin.day}`;
-  const beginTime = `${event.begin.hours < 10 ? `0${event.begin.hours}` : event.begin.hours}:${event.begin.minutes < 10 ? `0${event.begin.minutes}` : event.begin.minutes}`;
-  const endTime = `${event.end.hours < 10 ? `0${event.end.hours}` : event.end.hours}:${event.end.minutes < 10 ? `0${event.end.minutes}` : event.end.minutes}`;
-  const monthName = monthNames[event.begin.month - 1];
+  const dateFrom = dayjs(event.dateFrom);
+  const dateTo = dayjs(event.dateTo);
 
   return `
   <li class="trip-events__item">
     <div class="event">
-      <time class="event__date" datetime="${date}">${monthName} ${event.begin.day}</time>
+      <time class="event__date" datetime="${dateFrom.format('YYYY-MM-DD')}">${dateFrom.format('MMM DD')}</time>
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${event.type}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${capitalize(event.type)} ${destination.city}</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="${date}T${beginTime}">${beginTime}</time>
+          <time class="event__start-time" datetime="${dateFrom.format('YYYY-MM-DDTHH:mm')}">${dateFrom.format('HH:mm')}</time>
           &mdash;
-          <time class="event__end-time" datetime="${date}T${endTime}">${endTime}</time>
+          <time class="event__end-time" datetime="${dateTo.format('YYYY-MM-DDTHH:mm')}">${dateTo.format('HH:mm')}</time>
         </p>
       </div>
       <p class="event__price">
