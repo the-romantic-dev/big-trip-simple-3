@@ -33,7 +33,6 @@ export default class EventPresenter {
 
   #addListenersForListElement() {
     const editingEventViewListener = () => {
-
       this.replaceEditingFormWithEvent();
       document.removeEventListener('keydown', escListener);
     };

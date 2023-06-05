@@ -7,6 +7,7 @@ import SortingView from '../view/sorting_view.js';
 import Model from '../model/model.js';
 import MessageView from '../view/message_view.js';
 import EventPresenter from './event_presenter.js';
+import dayjs from 'dayjs';
 export default class Presenter {
 
   #model;
@@ -85,11 +86,9 @@ export default class Presenter {
 
   sortEventsByDay() {
     const compareDates = (a, b) => {
-      a = a.event[0].begin;
-      b = b.event[0].begin;
-      const dateA = new Date(a.year, a.month - 1, a.day, a.hours, a.minutes);
-      const dateB = new Date(b.year, b.month - 1, b.day, b.hours, b.minutes);
-      return dateA.getTime() - dateB.getTime();
+      a = a.event[0].dateFrom;
+      b = b.event[0].dateFrom;
+      return dayjs(a).diff(dayjs(b), 'minutes');
     };
 
     this.eventPresenters.sort(compareDates);
