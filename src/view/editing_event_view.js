@@ -186,6 +186,10 @@ export default class EditingEventView extends AbstractStatefulView {
     });
   }
 
+  setResetButtonTitle(title) {
+    this.element.querySelector('.event__reset-btn').textContent = title;
+  }
+
   _restoreHandlers() {
     this.#addTypeChangeListener();
     this.addButtonClickListener(this._callback.buttonClick);
