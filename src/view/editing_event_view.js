@@ -176,7 +176,6 @@ export default class EditingEventView extends AbstractStatefulView {
   #addDestinationChangeListener() {
     const destinationSelector = this.element.querySelector('.event__input--destination');
     destinationSelector.addEventListener('change', (evt) => {
-      console.log(cities.includes(evt.target.value));
       if (cities.includes(evt.target.value)) {
         this.#destination.city = evt.target.value;
         this.#destination.photos = cityToPhotos.get(evt.target.value);
