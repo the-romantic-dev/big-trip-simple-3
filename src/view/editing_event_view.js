@@ -1,10 +1,10 @@
-import { cities, eventTypes } from '../const.js';
-import { capitalize } from '../utils.js';
-import AbstractView from '../framework/view/abstract-view.js';
-
+import { cities, cityToPhotos, eventTypes } from '../const.js';
+import { capitalize, getRandomInteger } from '../utils.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import { eventTypeToOffers } from '../const.js';
 const createEventTypeItemListTemplate = () => {
   let result = '';
-  for (const type in eventTypes) {
+  for (const type of eventTypes) {
     result += `
     <div class="event__type-item">
       <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
@@ -16,7 +16,7 @@ const createEventTypeItemListTemplate = () => {
 
 const createDestinationListTemplate = () => {
   let result = '';
-  for (const city in cities) {
+  for (const city of cities) {
     result += `<option value="${capitalize(city)}"></option>`;
   }
   return result;
@@ -34,6 +34,14 @@ const createEventOfferSelectorListTemplate = (offers) => {
       <span class="event__offer-price">${offer.price}</span>
     </label>
   </div>`;
+  }
+  return result;
+};
+
+const createIamgeListTemplate = (destination) => {
+  let result = '';
+  for (const photo of destination.photos) {
+    result += `<img class="event__photo" src="${photo}" alt="Event photo">`;
   }
   return result;
 };
@@ -105,13 +113,19 @@ const createTemplate = (event, destination, offers) => {
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${destination.description}</p>
+
+        <div class="event__photos-container">
+          <div class="event__photos-tape">
+            ${createIamgeListTemplate(destination)}
+          </div>
+        </div>
       </section>
     </section>
   </form>
   </li>`;
 };
 
-export default class EditingEventView extends AbstractView {
+export default class EditingEventView extends AbstractStatefulView {
 
   #event;
   #destination;
@@ -122,6 +136,8 @@ export default class EditingEventView extends AbstractView {
     this.#event = event[0];
     this.#destination = event[1][0];
     this.#offers = event[1][1];
+    this.#addTypeChangeListener();
+    this.#addDestinationChangeListener();
   }
 
   get template() {
@@ -138,5 +154,42 @@ export default class EditingEventView extends AbstractView {
     this._callback.buttonClick = listener;
     const button = this.element.querySelector('.event__rollup-btn');
     button.addEventListener('click', listener);
+  }
+
+  #addTypeChangeListener() {
+    const typeInputs = this.element.querySelector('.event__type-group').querySelectorAll('.event__type-input');
+    typeInputs.forEach((element)=>{
+      element.addEventListener('change', () => {
+        const typeValue = element.value;
+        this.#event.type = typeValue;
+        this.#offers = eventTypeToOffers.get(typeValue).map((value)=>({
+          title: value[1],
+          price: getRandomInteger(10, 100),
+          name: value[0]
+        }));
+        this.updateElement(this.#event);
+        this.updateElement(this.#offers);
+      });
+    });
+  }
+
+  #addDestinationChangeListener() {
+    const destinationSelector = this.element.querySelector('.event__input--destination');
+    destinationSelector.addEventListener('change', (evt) => {
+      console.log(cities.includes(evt.target.value));
+      if (cities.includes(evt.target.value)) {
+        this.#destination.city = evt.target.value;
+        this.#destination.photos = cityToPhotos.get(evt.target.value);
+        this.updateElement(this.#destination);
+      }
+
+    });
+  }
+
+  _restoreHandlers() {
+    this.#addTypeChangeListener();
+    this.addButtonClickListener(this._callback.buttonClick);
+    this.addSubmitListener(this._callback.submit);
+    this.#addDestinationChangeListener();
   }
 }
