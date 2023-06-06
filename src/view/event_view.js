@@ -49,20 +49,24 @@ const createTemplate = (event, destination, offers) => {
   `;
 };
 
-export default class EventView extends AbstractView {
-  #event;
+export default class PointView extends AbstractView {
+  #point;
   #destination;
   #offers;
 
-  constructor(event) {
+  constructor(point, destination, offers) {
     super();
-    this.#event = event[0];
-    this.#destination = event[1][0];
-    this.#offers = event[1][1];
+    this.#point = point;
+    this.#destination = destination;
+    this.#offers = offers;
+  }
+
+  get point() {
+    return this.#point;
   }
 
   get template() {
-    return createTemplate(this.#event, this.#destination, this.#offers);
+    return createTemplate(this.#point, this.#destination, this.#offers);
   }
 
   addButtonClickListener(listener) {

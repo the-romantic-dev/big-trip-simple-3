@@ -1,4 +1,4 @@
-import { cities, cityToPhotos, eventTypes } from '../const.js';
+import { cities, cityToPhotos, dateFormats, eventTypes } from '../const.js';
 import { capitalize, getRandomInteger } from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { eventTypeToOffers } from '../const.js';
@@ -83,10 +83,10 @@ const createTemplate = (event, destination, offers) => {
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom.format('DD/MM/YYYY HH:mm')}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom.format(dateFormats.dayjs)}">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo.format('DD/MM/YYYY HH:mm')}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo.format(dateFormats.dayjs)}">
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -94,7 +94,7 @@ const createTemplate = (event, destination, offers) => {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${event.price}">
+        <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${event.price}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -127,26 +127,48 @@ const createTemplate = (event, destination, offers) => {
   </li>`;
 };
 
-export default class EditingEventView extends AbstractStatefulView {
+const blankDestination = {
+  city: '',
+  description: '',
+  photos:[]
+};
 
-  #event;
+export default class EditPointView extends AbstractStatefulView {
+
+  #point;
   #destination;
   #offers;
   #datepicker;
 
-  constructor(event) {
+  constructor(point = {
+    type: eventTypes[0],
+    dateFrom: dayjs().format(dateFormats.dayjs),
+    dateTo: dayjs().format(dateFormats.dayjs),
+    price: 0
+  }, destination = {...blankDestination}, offers = []) {
     super();
-    this.#event = event[0];
-    this.#destination = event[1][0];
-    this.#offers = event[1][1];
+    this.#point = point;
+    this.#destination = destination;
+    this.#offers = offers;
     this.#addTypeChangeListener();
     this.#addDestinationChangeListener();
     this.updateElement({});
+  }
 
+  get point() {
+    return this.#point;
+  }
+
+  get destination() {
+    return this.#destination;
+  }
+
+  get offers() {
+    return this.#offers;
   }
 
   get template() {
-    return createTemplate(this.#event, this.#destination, this.#offers);
+    return createTemplate(this.#point, this.#destination, this.#offers);
   }
 
   addSubmitListener(listener) {
@@ -155,9 +177,15 @@ export default class EditingEventView extends AbstractStatefulView {
     form.addEventListener('submit', listener);
   }
 
-  addButtonClickListener(listener) {
-    this._callback.buttonClick = listener;
+  addCloseButtonClickListener(listener) {
+    this._callback.closeButtonClick = listener;
     const button = this.element.querySelector('.event__rollup-btn');
+    button.addEventListener('click', listener);
+  }
+
+  addResetButtonListener(listener) {
+    this._callback.resetButtonClick = listener;
+    const button = this.element.querySelector('.event__reset-btn');
     button.addEventListener('click', listener);
   }
 
@@ -166,13 +194,13 @@ export default class EditingEventView extends AbstractStatefulView {
     typeInputs.forEach((element)=>{
       element.addEventListener('change', () => {
         const typeValue = element.value;
-        this.#event.type = typeValue;
+        this.#point.type = typeValue;
         this.#offers = eventTypeToOffers.get(typeValue).map((value)=>({
           title: value[1],
           price: getRandomInteger(10, 100),
           name: value[0]
         }));
-        this.updateElement(this.#event);
+        this.updateElement(this.#point);
         this.updateElement(this.#offers);
       });
     });
@@ -184,9 +212,10 @@ export default class EditingEventView extends AbstractStatefulView {
       if (cities.includes(evt.target.value)) {
         this.#destination.city = evt.target.value;
         this.#destination.photos = cityToPhotos.get(evt.target.value);
-        this.updateElement(this.#destination);
+      } else {
+        this.#destination = {...blankDestination};
       }
-
+      this.updateElement(this.#destination);
     });
   }
 
@@ -196,7 +225,7 @@ export default class EditingEventView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.#addTypeChangeListener();
-    this.addButtonClickListener(this._callback.buttonClick);
+    this.addCloseButtonClickListener(this._callback.closeButtonClick);
     this.addSubmitListener(this._callback.submit);
     this.#addDestinationChangeListener();
     this.#setDatepicker();
@@ -208,9 +237,12 @@ export default class EditingEventView extends AbstractStatefulView {
       this.#datepicker = flatpickr(
         value, {
           enableTime: true,
-          dateFormat: 'd/m/y H:i',
+          dateFormat: dateFormats.flatpickr,
           minDate: 'today',
-
+          onChange: (dates)=>{
+            this.#point.dateFrom = dates[0].toISOString();
+            this.updateElement(this.#point);
+          }
         });
     });
   }

@@ -1,7 +1,7 @@
-import Presenter from './presenter/presenter';
+import PointsListPresenter from './presenter/points_list_presenter';
 
 const tripEventsElement = document.querySelector('.trip-events');
 const tripControlsFiltersElement = document.querySelector('.trip-controls__filters');
 
-const presenter = new Presenter(tripControlsFiltersElement, tripEventsElement);
+const presenter = new PointsListPresenter(tripControlsFiltersElement, tripEventsElement);
 presenter.init();

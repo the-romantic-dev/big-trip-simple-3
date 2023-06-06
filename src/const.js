@@ -4,6 +4,14 @@ export const eventTypes = [
   'check-in', 'sightseeing','restaurant'
 ];
 
+export const dateFormats = {
+  dayjs: 'DD/MM/YY HH:mm',
+  flatpickr: 'd/m/y H:i',
+  iso: 'YYYY-MM-DDTHH:mm:ss.SSSZ'
+};
+
+export const filters = ['everything', 'future'];
+
 export const cities = ['Chamonix', 'Geneva', 'Amsterdam'];
 export const cityToPhotos = new Map([
   [cities[0], ['http://picsum.photos/248/152?r=1', 'http://picsum.photos/248/152?r=2']],
