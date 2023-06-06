@@ -9,7 +9,7 @@ const createTemplate = () => `
                 </div>
 
                 <div class="trip-filters__filter">
-                  <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future" disabled>
+                  <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future">
                   <label class="trip-filters__filter-label" for="filter-future">Future</label>
                 </div>
 
@@ -19,5 +19,11 @@ const createTemplate = () => `
 export default class FiltersView extends AbstractView {
   get template() {
     return createTemplate();
+  }
+
+  addFilterChangeListener(listener) {
+    this.element.querySelectorAll('input').forEach((value)=> {
+      value.addEventListener('change', listener);
+    });
   }
 }

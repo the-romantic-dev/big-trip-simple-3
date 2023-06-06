@@ -1,24 +1,25 @@
-import EventView from '../view/event_view.js';
-import EditingEventView from '../view/editing_event_view.js';
+import PointView from '../view/event_view.js';
+import EditPointView from '../view/edit_point_view.js';
 
-export default class EventPresenter {
+export default class PointPresenter {
 
-  #event;
   #currentView;
-  constructor(event, resetListCallback) {
-    this.#event = event;
-    this.editingEventView = new EditingEventView(this.event);
-    this.eventView = new EventView(this.event);
+  constructor(point, destination, offers, resetListCallback, resetButtonListener) {
+    this.editingEventView = new EditPointView(point, destination, offers);
+    this.eventView = new PointView(point, destination, offers);
     this.resetListCallback = resetListCallback;
     this.#currentView = this.eventView;
-  }
-
-  get event() {
-    return this.#event;
+    this.editingEventView.addResetButtonListener(()=>{
+      resetButtonListener(this);
+    });
   }
 
   get currentView() {
     return this.#currentView;
+  }
+
+  get point() {
+    return this.eventView.point;
   }
 
   replaceEventWithEditingForm() {
@@ -49,7 +50,7 @@ export default class EventPresenter {
       document.addEventListener('keydown', escListener);
     });
 
-    this.editingEventView.addButtonClickListener(editingEventViewListener);
+    this.editingEventView.addCloseButtonClickListener(editingEventViewListener);
     this.editingEventView.addSubmitListener(editingEventViewListener);
   }
 
