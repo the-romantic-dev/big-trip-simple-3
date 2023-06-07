@@ -103,6 +103,7 @@ export default class PointPresenter {
   };
 
   #onClose = () => {
+    this.#editPointView.reset(this.#point);
     this.#replaceFormToPoint();
   };
 

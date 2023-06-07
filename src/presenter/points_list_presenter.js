@@ -44,7 +44,8 @@ export default class PointsListPresenter {
 
   #isLoading = true;
 
-  constructor({container, pointsModel, destinationsModel, offersModel, filtersModel, onNewPointDestroy}) {
+  #onNewPointCreate = null;
+  constructor({container, pointsModel, destinationsModel, offersModel, filtersModel, onNewPointDestroy, onNewPointCreate}) {
 
     this.#container = container;
 
@@ -52,6 +53,8 @@ export default class PointsListPresenter {
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#filtersModel = filtersModel;
+
+    this.#onNewPointCreate = onNewPointCreate;
 
     this.#newPointPresenter = new NewPointPresenter({
       pointId: this.#pointsModel.points.length,
@@ -101,9 +104,12 @@ export default class PointsListPresenter {
   }
 
   createPoint() {
-    this.#currentSortType = SortType.DEFAULT;
+
+    this.#currentSortType = SortType.DAY;
     this.#filtersModel.currentFilter = FilterType.ALL;
+
     this.#newPointPresenter.init(`${this.#pointsModel.points.length}`);
+    this.#onNewPointCreate();
   }
 
   #renderPoint(point) {
