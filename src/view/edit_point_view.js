@@ -236,9 +236,7 @@ export default class EditPointView extends AbstractStatefulView {
     offersInputs.forEach((input)=>{
       input.addEventListener('change', (evt)=>{
         evt.preventDefault();
-        console.log(this._state.point.offers);
         this.#onOfferCheck(evt.target);
-        console.log(this._state.point.offers);
       });
     });
 
