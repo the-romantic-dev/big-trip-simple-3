@@ -17,13 +17,29 @@ const createTemplate = () => `
               </form>`;
 
 export default class FiltersView extends AbstractView {
+
+  #onFilterTypeChange = null;
+
+  constructor(onFilterTypeChange) {
+    super();
+    this.#onFilterTypeChange = onFilterTypeChange;
+
+    this.element.querySelectorAll('input').forEach((value)=>{
+      value.addEventListener('change', (evt)=>{
+        evt.preventDefault();
+        this.#onFilterTypeChange(evt.target.value);
+      });
+    });
+  }
+
+
   get template() {
     return createTemplate();
   }
 
-  addFilterChangeListener(listener) {
-    this.element.querySelectorAll('input').forEach((value)=> {
-      value.addEventListener('change', listener);
-    });
-  }
+  // addFilterChangeListener(listener) {
+  //   this.element.querySelectorAll('input').forEach((value)=> {
+  //     value.addEventListener('change', listener);
+  //   });
+  // }
 }

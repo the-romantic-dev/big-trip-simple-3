@@ -1,9 +1,10 @@
-export default class FiltersModel {
+import { FilterType, UpdateType } from '../const';
+import Observable from '../framework/observable';
 
-  #currentFilter;
-  constructor(filter) {
-    this.#currentFilter = filter;
-  }
+export default class FiltersModel extends Observable{
+
+  #currentFilter = FilterType.ALL;
+
 
   get currentFilter() {
     return this.#currentFilter;
@@ -11,6 +12,7 @@ export default class FiltersModel {
 
   set currentFilter(currentFilter) {
     this.#currentFilter = currentFilter;
+    this._notify(UpdateType.UPDATE);
   }
 
 }
