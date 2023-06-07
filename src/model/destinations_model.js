@@ -1,27 +1,52 @@
-import { generateDestinastion } from './fish';
-
-
 export default class DestinationsModel {
 
-  #destinations;
+  #destinations = [];
+  #destinationsApiService = null;
+  #names = null;
+  constructor(destinationsApiService) {
+    this.#destinationsApiService = destinationsApiService;
 
-  constructor() {
-    this.#destinations = [];
-    for (let i = 0; i < 10; i++) {
-      this.#destinations.push(generateDestinastion());
-    }
   }
 
   get destinations() {
     return this.#destinations;
   }
 
-  set destinations(destinations) {
-    this.#destinations = destinations;
+  async init() {
+    try {
+      this.#destinations = await this.#destinationsApiService.destinations;
+    } catch(err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+      this.#destinations = [];
+    }
   }
 
-  updateDestination(index, newDestination) {
-    this.#destinations[index] = newDestination;
+  get names() {
+    if (!this.#names) {
+      this.#names = this.#destinations.map((destination)=>destination.name);
+    }
+    return this.#names;
+  }
+
+  getDestinationById(id) {
+    let result = null;
+    this.#destinations.forEach((destination)=>{
+      if(destination.id === id) {
+        result = destination;
+      }
+    });
+    return result;
+  }
+
+  getDestinationByName(name) {
+    let result = null;
+    this.#destinations.forEach((destination)=>{
+      if(destination.name === name) {
+        result = destination;
+      }
+    });
+    return result;
   }
 
 }

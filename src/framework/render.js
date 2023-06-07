@@ -27,6 +27,7 @@ function createElement(template) {
  * @param {string} place Позиция компонента относительно контейнера. По умолчанию - `beforeend`
  */
 function render(component, container, place = RenderPosition.BEFOREEND) {
+
   if (!(component instanceof AbstractView)) {
     throw new Error('Can render only components');
   }

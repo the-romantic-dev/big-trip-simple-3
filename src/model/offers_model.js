@@ -1,14 +1,18 @@
-import { generateOffers } from './fish';
-
-
 export default class OffersModel {
+  #offersApiService = null;
+  #offers = [];
 
-  #offers;
+  constructor(offersApiService) {
+    this.#offersApiService = offersApiService;
+  }
 
-  constructor() {
-    this.#offers = [];
-    for (let i = 0; i < 10; i++) {
-      this.#offers.push(generateOffers());
+  async init() {
+    try {
+      this.#offers = await this.#offersApiService.offers;
+    } catch(err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+      this.#offers = [];
     }
   }
 
@@ -16,12 +20,13 @@ export default class OffersModel {
     return this.#offers;
   }
 
-  set offers(offers) {
-    this.#offers = offers;
+  getOffersByType(type) {
+    let result = null;
+    this.#offers.forEach((offer)=>{
+      if (offer.type === type) {
+        result = offer.offers;
+      }
+    });
+    return result;
   }
-
-  updateOffers(index, newOffers) {
-    this.#offers[index] = newOffers;
-  }
-
 }
