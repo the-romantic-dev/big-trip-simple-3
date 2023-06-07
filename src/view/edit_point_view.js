@@ -1,7 +1,6 @@
-import { cities, cityToPhotos, dateFormats, eventTypes } from '../const.js';
-import { capitalize, getRandomInteger } from '../utils.js';
+import { dateFormats, eventTypes } from '../const.js';
+import { capitalize } from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { eventTypeToOffers } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import dayjs from 'dayjs';
@@ -251,7 +250,7 @@ export default class EditPointView extends AbstractStatefulView {
   #onDestinationChange = (evt)=> {
     let update = null;
     if (this.#destinationsModel.names.includes(evt.target.value)) {
-      update = {destination: {...this.#destinationsModel.getDestinationByName(evt.target.value)}}
+      update = {destination: {...this.#destinationsModel.getDestinationByName(evt.target.value)}};
     } else {
       update = {destination: {...this._state.destination, pictures: [], name: '', description: ''}};
     }
@@ -266,6 +265,7 @@ export default class EditPointView extends AbstractStatefulView {
     } else {
       value = parseInt(evt.target.value, 10);
     }
+    // eslint-disable-next-line camelcase
     this.updateElement({point: {...this._state.point, base_price: value}});
 
   };
@@ -285,10 +285,12 @@ export default class EditPointView extends AbstractStatefulView {
     const dateToSelector = this.element.querySelector('#event-end-time-1');
 
     this.#dateFromDatepicker = this.#createFlatpickr(dateFromSelector, (dates)=>{
+      // eslint-disable-next-line camelcase
       this.updateElement({point: {...this._state.point, date_from: `${dates[0].toISOString()}`}});
     });
 
     this.#dateToDatepicker = this.#createFlatpickr(dateToSelector, (dates)=>{
+      // eslint-disable-next-line camelcase
       this.updateElement({point: {...this._state.point, date_to: `${dates[0].toISOString()}`}});
     });
 
@@ -308,6 +310,7 @@ export default class EditPointView extends AbstractStatefulView {
   }
 
   static parseStateToPoint(state) {
+    // eslint-disable-next-line camelcase
     return {...state.point, is_favorite: true};
   }
 }
