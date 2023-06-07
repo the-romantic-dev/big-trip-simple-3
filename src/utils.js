@@ -11,9 +11,6 @@ export const getRandomInteger = (a = 0, b = 1) => {
 export const capitalize =
   (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
-export const generateRandomString =
-  (length) => Math.random().toString(36).slice(2, length);
-
 export const filter = {
   [FilterType.ALL]: (points) => points,
   [FilterType.FUTURE]: (points) => points.filter((point) => dayjs(point.date_from).diff(dayjs()) > 0)
