@@ -1,7 +1,6 @@
 import PointsModel from './model/points_model';
 import OffersModel from './model/offers_model';
 import DestinationsModel from './model/destinations_model';
-import { generateRandomString } from './utils';
 import FiltersModel from './model/filters_model';
 import PointsApiService from './server/services/points_api_service';
 import OffersApiService from './server/services/offers_api_service';
