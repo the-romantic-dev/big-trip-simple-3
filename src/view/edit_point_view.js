@@ -35,7 +35,7 @@ const createEventOfferSelectorListTemplate = (offers, checkedOffers) => {
     }
     result += `
     <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleWithoutSpaces}-1" type="checkbox" name="event-offer-${titleWithoutSpaces}" ${checkedAttr}>
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${titleWithoutSpaces}-1" type="checkbox" name="event-offer-${titleWithoutSpaces}" ${checkedAttr} data-offerId="${offer.id}">
     <label class="event__offer-label" for="event-offer-${titleWithoutSpaces}-1">
       <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
@@ -160,7 +160,6 @@ export default class EditPointView extends AbstractStatefulView {
   #viewType = null;
   #destinationsModel = null;
   #offersModel = null;
-
   constructor({pointId = '-1', point = {...blankPoint}, destinationsModel, offersModel, onSubmit, onDelete, onClose = ()=>{}, viewType = EditPointView.Type.EDIT}) {
     super();
     if (point.id === '-1') {
@@ -226,7 +225,21 @@ export default class EditPointView extends AbstractStatefulView {
     const form = this.element.querySelector('form');
     form.addEventListener('submit', (evt)=> {
       evt.preventDefault();
+      if (this._state.point.base_price <= 0 || dayjs(this._state.point.date_to).diff(dayjs(this._state.point.date_from)) <= 0) {
+        return;
+      }
       this._callback.onSubmit(EditPointView.parseStateToPoint(this._state));
+    });
+
+
+    const offersInputs = this.element.querySelectorAll('.event__offer-checkbox');
+    offersInputs.forEach((input)=>{
+      input.addEventListener('change', (evt)=>{
+        evt.preventDefault();
+        console.log(this._state.point.offers);
+        this.#onOfferCheck(evt.target);
+        console.log(this._state.point.offers);
+      });
     });
 
     const destinationSelector = this.element.querySelector('.event__input--destination');
@@ -242,7 +255,7 @@ export default class EditPointView extends AbstractStatefulView {
     const typeValue = evt.target.value;
     const offers = this.#offersModel.getOffersByType(typeValue);
     this.updateElement({
-      point: {...this._state.point, type: typeValue},
+      point: {...this._state.point, type: typeValue, offers:[]},
       offers: [...offers]
     });
   };
@@ -255,6 +268,18 @@ export default class EditPointView extends AbstractStatefulView {
       update = {destination: {...this._state.destination, pictures: [], name: '', description: ''}};
     }
     this.updateElement(update);
+  };
+
+  #onOfferCheck = (element) => {
+    let oldCheckedOffers = [...this._state.point.offers];
+    const id = parseInt(element.dataset.offerid, 10);
+    if (element.checked) {
+      oldCheckedOffers.push(id);
+    } else {
+      oldCheckedOffers = oldCheckedOffers.filter((value) => value !== id);
+    }
+
+    this._setState({point: {...this._state.point, offers: oldCheckedOffers}});
   };
 
   #onPriceChange = (evt) => {

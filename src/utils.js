@@ -28,5 +28,5 @@ export const comparePointsByDay = (pointA, pointB) => {
 export const sortPointsByPrice = (pointA, pointB) => {
   const priceA = pointA.base_price;
   const priceB = pointB.base_price;
-  return priceA - priceB;
+  return priceB - priceA;
 };

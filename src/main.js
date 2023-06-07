@@ -13,9 +13,8 @@ import { render } from './framework/render';
 
 
 const url = 'https://18.ecmascript.pages.academy/big-trip';
-const authToken = `Basic ${generateRandomString(15)}`;
+const authToken = 'Basic arn83jd6xyz';
 
-// const apiFacade = new ApiFacade(url, authToken);
 const pointsContainer = document.querySelector('.trip-events');
 const filtersContainer = document.querySelector('.trip-controls__filters');
 const newPointButtonContainter = document.querySelector('.trip-main');
@@ -25,21 +24,21 @@ const offersModel = new OffersModel(new OffersApiService(url, authToken));
 const destinationsModel = new DestinationsModel(new DestinationsApiService(url, authToken));
 const filtersModel = new FiltersModel();
 
-const pointsListPresenter = new PointsListPresenter({
-  container: pointsContainer,
-  pointsModel: pointsModel,
-  destinationsModel: destinationsModel,
-  offersModel: offersModel,
-  filtersModel: filtersModel,
-  onNewPointDestroy: onNewPointDestroy
-});
-
 const filtersPresenter = new FiltersPresenter({
   container: filtersContainer,
   filtersModel: filtersModel,
   pointsModel: pointsModel
 });
 
+const pointsListPresenter = new PointsListPresenter({
+  container: pointsContainer,
+  pointsModel: pointsModel,
+  destinationsModel: destinationsModel,
+  offersModel: offersModel,
+  filtersModel: filtersModel,
+  onNewPointDestroy: onNewPointDestroy,
+  onNewPointCreate: ()=>{filtersPresenter.init();}
+});
 
 const newPointButtonView = new NewPointButtonView(onNewPointButtonClick);
 
