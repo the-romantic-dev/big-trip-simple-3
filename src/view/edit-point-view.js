@@ -225,7 +225,7 @@ export default class EditPointView extends AbstractStatefulView {
     const form = this.element.querySelector('form');
     form.addEventListener('submit', (evt)=> {
       evt.preventDefault();
-      if (this._state.point.base_price <= 0 || dayjs(this._state.point.date_to).diff(dayjs(this._state.point.date_from)) <= 0) {
+      if (this._state.point.base_price <= 0 || dayjs(this._state.point.date_to).diff(dayjs(this._state.point.date_from)) <= 0 || this._state.destination.name === '') {
         return;
       }
       this._callback.onSubmit(EditPointView.parseStateToPoint(this._state));
@@ -334,6 +334,6 @@ export default class EditPointView extends AbstractStatefulView {
 
   static parseStateToPoint(state) {
     // eslint-disable-next-line camelcase
-    return {...state.point, is_favorite: true};
+    return {...state.point, is_favorite: true, destination: state.destination.id};
   }
 }

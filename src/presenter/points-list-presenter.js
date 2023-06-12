@@ -3,13 +3,13 @@ import { RenderPosition, remove, render } from '../framework/render.js';
 
 import {FilterType, SortType, UpdateType, UserAction} from '../const.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
-import ListView from '../view/list_view.js';
-import SortView from '../view/sort_view.js';
-import MessageView from '../view/message_view.js';
-import PointPresenter from './point_presenter.js';
-import NewPointPresenter from './new_point_presenter.js';
+import ListView from '../view/list-view.js';
+import SortView from '../view/sort-view.js';
+import MessageView from '../view/message-view.js';
+import PointPresenter from './point-presenter.js';
+import NewPointPresenter from './new-point-presenter.js';
 import { filter, comparePointsByDay, sortPointsByPrice } from '../utils.js';
-import LoadingView from '../view/loading_view.js';
+import LoadingView from '../view/loading-view.js';
 
 const TimeLimit = {
   LOWER_LIMIT: 350,
@@ -186,7 +186,6 @@ export default class PointsListPresenter {
 
   #onPointDataChange = async (actionType, update) => {
     this.#uiBlocker.block();
-
     switch (actionType) {
       case UserAction.UPDATE_TASK:
         await this.#pointsModel.updatePoint(update);

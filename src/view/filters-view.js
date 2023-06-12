@@ -36,10 +36,4 @@ export default class FiltersView extends AbstractView {
   get template() {
     return createTemplate();
   }
-
-  // addFilterChangeListener(listener) {
-  //   this.element.querySelectorAll('input').forEach((value)=> {
-  //     value.addEventListener('change', listener);
-  //   });
-  // }
 }

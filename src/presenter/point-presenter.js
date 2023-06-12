@@ -1,5 +1,5 @@
-import PointView from '../view/point_view.js';
-import EditPointView from '../view/edit_point_view.js';
+import PointView from '../view/point-view.js';
+import EditPointView from '../view/edit-point-view.js';
 import { remove, render, replace } from '../framework/render.js';
 import {UserAction} from '../const.js';
 
@@ -9,8 +9,6 @@ const Mode = {
 };
 
 export default class PointPresenter {
-
-  // #currentView;
   #container = null;
   #onDataChange = null;
   #onModeChange = null;
@@ -30,13 +28,6 @@ export default class PointPresenter {
     this.#onDataChange = onDataChange;
     this.#onModeChange = onModeChange;
     this.#container = container;
-    // this.editingEventView = new EditPointView(point, destination, offers, destinationsNames);
-    // this.eventView = new PointView(point, destination, offers);
-    // this.resetListCallback = resetListCallback;
-    // this.#currentView = this.eventView;
-    // this.editingEventView.addResetButtonListener(()=>{
-    //   resetButtonListener(this);
-    // });
   }
 
   init(point) {
@@ -131,31 +122,4 @@ export default class PointPresenter {
       this.#replaceFormToPoint();
     }
   };
-
-  // #addListenersForListElement() {
-  //   const editingEventViewListener = () => {
-  //     this.#replaceFormToPoint();
-  //     document.removeEventListener('keydown', escListener);
-  //   };
-
-  //   function escListener (event) {
-  //     if (event.key === 'Escape') {
-  //       editingEventViewListener();
-  //     }
-  //   }
-
-  //   this.eventView.addButtonClickListener(() => {
-  //     this.resetListCallback();
-  //     this.replacePointToForm();
-  //     document.addEventListener('keydown', escListener);
-  //   });
-
-  //   this.editingEventView.addCloseButtonClickListener(editingEventViewListener);
-  //   this.editingEventView.addSubmitListener(editingEventViewListener);
-  // }
-
-  // createNewEventViewElement() {
-  //   this.#addListenersForListElement();
-  //   return this.eventView.element;
-  // }
 }
