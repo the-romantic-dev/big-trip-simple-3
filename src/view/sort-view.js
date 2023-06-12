@@ -46,8 +46,6 @@ export default class SortView extends AbstractView {
     this.#currentSortType = currentSortType;
     this.#onSortTypeChange = onSortTypeChange;
     this.element.addEventListener('change', this.#sortTypeChangeHandler);
-    // this.element.querySelector('.trip-sort__item--day').querySelector('input').addEventListener('change', this.#sortTypeChangeHandler);
-    // this.element.querySelector('.trip-sort__item--price').querySelector('input').addEventListener('change', this.#sortTypeChangeHandler);
   }
 
   get template() {
@@ -58,14 +56,4 @@ export default class SortView extends AbstractView {
     evt.preventDefault();
     this.#onSortTypeChange(evt.target.dataset.type);
   };
-
-  // addClickListener(listener) {
-  //   this._callback.clickListener = listener;
-  //   this.#daySortElement.addEventListener('change', function () {
-  //     listener(this.dataset.type);
-  //   });
-  //   this.#priceSortElement.addEventListener('change', function () {
-  //     listener(this.dataset.type);
-  //   });
-  // }
 }

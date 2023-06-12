@@ -1,5 +1,5 @@
 import { FilterType } from '../const';
-import FiltersView from '../view/filters_view.js';
+import FiltersView from '../view/filters-view.js';
 import { filter } from '../utils';
 import { remove, replace, render } from '../framework/render';
 export default class FiltersPresenter {
@@ -43,8 +43,6 @@ export default class FiltersPresenter {
 
     replace(this.#filtersView, previousFiltersView);
     remove(previousFiltersView);
-    // this.#filtersView.addFilterChangeListener(filterChangeCallback);
-    // render(this.#filtersView, this.filtersContainer);
   }
 
   #onFilterTypeChange = (filterType) => {
@@ -54,12 +52,4 @@ export default class FiltersPresenter {
 
     this.#filtersModel.currentFilter = filterType;
   };
-
-  // setCurrentFilter(filter) {
-  //   this.#filtersModel.currentFilter = filter;
-  // }
-
-  // getCurrentFilter() {
-  //   return this.#filtersModel.currentFilter;
-  // }
 }
